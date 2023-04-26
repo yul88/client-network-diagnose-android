@@ -1,9 +1,5 @@
 # Client Network Diagonse SDK for Android
 
-[![](https://img.shields.io/github/release/ucloud/netanalysis-sdk-android.svg)](https://github.com/ucloud/netanalysis-sdk-android)
-[![](https://img.shields.io/github/last-commit/ucloud/netanalysis-sdk-android.svg)](https://github.com/ucloud/netanalysis-sdk-android)
-[![](https://img.shields.io/github/commits-since/ucloud/netanalysis-sdk-android/latest.svg)](https://github.com/ucloud/netanalysis-sdk-android)
-
 ## 运行环境
 ### Android
 - Android系统版本：**4.1** (API 16)及以上
