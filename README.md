@@ -497,8 +497,8 @@ public enum UCNetStatus {
 ## License
 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-## 作者
+## 原作者
 - [Joshua Yin](https://github.com/joshuayin)
 
-## 组织
-- [UCloud](https://github.com/ucloud)
+## Forked from 
+- [netanalysis-sdk-android](https://github.com/ucloud/netanalysis-sdk-android)
