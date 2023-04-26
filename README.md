@@ -1,4 +1,4 @@
-# UCloud NetAnalysis SDK for Android
+# Client Network Diagonse SDK for Android
 
 [![](https://img.shields.io/github/release/ucloud/netanalysis-sdk-android.svg)](https://github.com/ucloud/netanalysis-sdk-android)
 [![](https://img.shields.io/github/last-commit/ucloud/netanalysis-sdk-android.svg)](https://github.com/ucloud/netanalysis-sdk-android)
@@ -384,7 +384,7 @@ public class UserDefinedData {
 ```
 
 ### 注意事项
-### UCloud尊重客户和终端用户的隐私，请务必不要上传带有用户隐私信息，包括但不限于：用户的姓名、手机号、身份证号、手机IMEI值、地址等敏感信息
+### 请尊重客户和终端用户的隐私，务必不要上传带有用户隐私信息，包括但不限于：用户的姓名、手机号、身份证号、手机IMEI值、地址等敏感信息
 - UserDefinedData是(String-String)键值对Map，其中Key不能是null或者""。
 - 如果有不满足规则的UserDefinedData，`UserDefinedData.Builder create()`时会抛出`UCParamVerifyException`，具体错误信息，可以通过异常的getMessage()获取。
 - 该字段作为用户在查询上报数据时，可作为查询索引，故**不建议用户在Value中拼接多个值**。
