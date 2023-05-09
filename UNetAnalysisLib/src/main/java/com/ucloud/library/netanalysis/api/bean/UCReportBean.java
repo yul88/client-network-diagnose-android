@@ -20,8 +20,9 @@ public class UCReportBean extends UCApiBaseRequestBean {
     protected String uuid;
     protected int trigger;
     
-    public UCReportBean(String appKey, String action, ReportTagBean tag, IpInfoBean ipInfo, UserDefinedData userDefinedData) {
-        super(appKey);
+    //public UCReportBean(String appKey, String action, ReportTagBean tag, IpInfoBean ipInfo, UserDefinedData userDefinedData) {
+    public UCReportBean(String action, ReportTagBean tag, IpInfoBean ipInfo, UserDefinedData userDefinedData) {
+        //super(appKey);
         this.action = action;
         this.tag = tag.makeReportString();
         this.ipInfo = ipInfo.makeReportString();

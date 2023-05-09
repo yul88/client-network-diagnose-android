@@ -3,7 +3,7 @@ package com.ucloud.library.netanalysis;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
-import android.util.Base64;
+//import android.util.Base64;
 
 import com.ucloud.library.netanalysis.api.bean.UCApiBaseRequestBean;
 import com.ucloud.library.netanalysis.api.bean.SdkStatus;
@@ -24,33 +24,33 @@ import com.ucloud.library.netanalysis.api.bean.TracerouteDataBean;
 import com.ucloud.library.netanalysis.api.bean.UCApiResponseBean;
 import com.ucloud.library.netanalysis.api.bean.IpListBean;
 import com.ucloud.library.netanalysis.api.bean.UCGetIpListRequestBean;
-import com.ucloud.library.netanalysis.api.bean.UCReportBean;
-import com.ucloud.library.netanalysis.api.bean.UCReportEncryptBean;
+//import com.ucloud.library.netanalysis.api.bean.UCReportBean;
+//import com.ucloud.library.netanalysis.api.bean.UCReportEncryptBean;
 import com.ucloud.library.netanalysis.exception.UCHttpException;
 import com.ucloud.library.netanalysis.module.UserDefinedData;
 import com.ucloud.library.netanalysis.parser.JsonDeserializer;
 import com.ucloud.library.netanalysis.parser.JsonSerializable;
-import com.ucloud.library.netanalysis.utils.Encryptor;
-import com.ucloud.library.netanalysis.utils.HexFormatter;
-import com.ucloud.library.netanalysis.utils.JLog;
+//import com.ucloud.library.netanalysis.utils.Encryptor;
+//import com.ucloud.library.netanalysis.utils.HexFormatter;
+//import com.ucloud.library.netanalysis.utils.JLog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
+//import java.nio.charset.Charset;
+//import java.security.InvalidKeyException;
+//import java.security.NoSuchAlgorithmException;
+//import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.Arrays;
+//import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+//import javax.crypto.BadPaddingException;
+//import javax.crypto.IllegalBlockSizeException;
+//import javax.crypto.NoSuchPaddingException;
 
 /**
  * Created by joshua on 2018/10/8 11:16.
@@ -67,15 +67,18 @@ final class UCApiManager {
     
     private UCHttpClient httpClient;
     private UCHttpsClient httpsClient;
-    
+
+    /* no encrypt in demo
     private final String appKey;
     private final PublicKey appSecret;
+    */
     private String uuid;
     
-    UCApiManager(Context context, String appKey, PublicKey appSecret) {
+    //UCApiManager(Context context, String appKey, PublicKey appSecret) {
+    UCApiManager(Context context) {
         this.packageName = context.getPackageName();
-        this.appKey = appKey;
-        this.appSecret = appSecret;
+        //this.appKey = appKey;
+        //this.appSecret = appSecret;
         
         prepareUuid(context);
         
@@ -107,8 +110,9 @@ final class UCApiManager {
     }
     
     Response<UCApiResponseBean<SdkStatus>> apiGetSdkStatus() throws UCHttpException {
-        UCApiBaseRequestBean requestBean = new UCApiBaseRequestBean(appKey);
-        
+        //UCApiBaseRequestBean requestBean = new UCApiBaseRequestBean(appKey);
+        UCApiBaseRequestBean requestBean = new UCApiBaseRequestBean();
+
         UCHttpClient client = BuildConfig.UCLOUD_API.startsWith("https") ? httpsClient : httpClient;
         return client.execute(new Request.RequestBuilder<JsonSerializable>(BuildConfig.UCLOUD_API, HttpMethod.POST)
                 .path("/api/iplist/getsdkstatus/")
@@ -185,7 +189,8 @@ final class UCApiManager {
      * @throws UCHttpException
      */
     Response<UCApiResponseBean<IpListBean>> apiGetPingList(final IpInfoBean ipInfoBean) throws UCHttpException {
-        UCGetIpListRequestBean requestBean = new UCGetIpListRequestBean(appKey);
+        //UCGetIpListRequestBean requestBean = new UCGetIpListRequestBean(appKey);
+        UCGetIpListRequestBean requestBean = new UCGetIpListRequestBean();
         if (ipInfoBean != null) {
             requestBean.setLongitude(ipInfoBean.getLongitude());
             requestBean.setLatitude(ipInfoBean.getLatitude());
@@ -264,18 +269,22 @@ final class UCApiManager {
         
         ReportPingTagBean reportTag = new ReportPingTagBean(packageName, pingData.getDst_ip(), pingData.getTTL());
         reportTag.setCus(isCustomIp);
-        ReportPingBean report = new ReportPingBean(appKey, pingData, pingStatus,
+        //ReportPingBean report = new ReportPingBean(appKey, pingData, pingStatus,
+        ReportPingBean report = new ReportPingBean(pingData, pingStatus,
                 reportTag, srcIpInfo, userDefinedData);
         report.setUuid(uuid);
         report.setTrigger(isManmul ? 1 : 0);
-        
+
+        /* no encryption in demo
         UCReportEncryptBean reportEncryptBean = encryptReportData(report);
         if (reportEncryptBean == null)
             return null;
+        */
         
         UCHttpClient client = reportAddress.startsWith("https") ? httpsClient : httpClient;
         return client.execute(new Request.RequestBuilder<JsonSerializable>(reportAddress, HttpMethod.POST)
-                .body(reportEncryptBean)
+                //.body(reportEncryptBean)
+                .body(report)
                 .build(), new JsonDeserializer<UCApiResponseBean<MessageBean>>() {
             @Override
             public UCApiResponseBean<MessageBean> fromJson(String json) throws JSONException {
@@ -318,19 +327,23 @@ final class UCApiManager {
         
         ReportTracerouteTagBean reportTag = new ReportTracerouteTagBean(packageName, tracerouteData.getDst_ip());
         reportTag.setCus(isCustomIp);
-        ReportTracerouteBean report = new ReportTracerouteBean(appKey, tracerouteData,
+        //ReportTracerouteBean report = new ReportTracerouteBean(appKey, tracerouteData,
+        ReportTracerouteBean report = new ReportTracerouteBean(tracerouteData,
                 reportTag
                 , srcIpInfo, userDefinedData);
         report.setUuid(uuid);
         report.setTrigger(isManmul ? 1 : 0);
-        
+
+        /* no encryption in demo
         UCReportEncryptBean reportEncryptBean = encryptReportData(report);
         if (reportEncryptBean == null)
             return null;
+        */
         
         UCHttpClient client = reportAddress.startsWith("https") ? httpsClient : httpClient;
         return client.execute(new Request.RequestBuilder<JsonSerializable>(reportAddress, HttpMethod.POST)
-                .body(reportEncryptBean)
+                //.body(reportEncryptBean)
+                .body(report)
                 .build(), new JsonDeserializer<UCApiResponseBean<MessageBean>>() {
             @Override
             public UCApiResponseBean<MessageBean> fromJson(String json) throws JSONException {
@@ -353,7 +366,8 @@ final class UCApiManager {
             }
         });
     }
-    
+
+/* no encryption in demo
     private static final int RSA_CRYPT_SRC_LIMIT = 128;
     
     private UCReportEncryptBean encryptReportData(UCReportBean reportBean) {
@@ -405,5 +419,5 @@ final class UCApiManager {
         }
         
         return HexFormatter.formatByteArray2HexString(cryptArr, false);
-    }
+    }*/
 }

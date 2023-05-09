@@ -12,12 +12,14 @@ public class UCGetIpListRequestBean extends UCApiBaseRequestBean {
     private String longitude;
     private String latitude;
     
-    public UCGetIpListRequestBean(String appKey) {
-        super(appKey);
+    //public UCGetIpListRequestBean(String appKey) {
+    public UCGetIpListRequestBean() {
+        //super(appKey);
     }
     
-    public UCGetIpListRequestBean(String appKey, String longitude, String latitude) {
-        super(appKey);
+    //public UCGetIpListRequestBean(String appKey, String longitude, String latitude) {
+    public UCGetIpListRequestBean(String longitude, String latitude) {
+        //super(appKey);
         this.longitude = longitude;
         this.latitude = latitude;
     }

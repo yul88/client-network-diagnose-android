@@ -40,17 +40,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ScrollView srcollview;
     private TextView txt_result;
     
-    private String appKey = UCloud为您的APP分配的APP_KEY;
-    private String appSecret = UCloud为您的APP分配的APP_SECRET;
-    
+    //private String appKey = UCloud为您的APP分配的APP_KEY;
+    //private String appKey = "dummy_key";
+    //private String appSecret = UCloud为您的APP分配的APP_SECRET;
+    //private String appSecret = "dummy_secret";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
         // 初始化SDK模块
-        UmqaClient.init(getApplicationContext(), appKey, appSecret);
-        
+        //UmqaClient.init(getApplicationContext(), appKey, appSecret);
+        UmqaClient.init(getApplicationContext());
+
         srcollview = findViewById(R.id.srcollview);
         txt_result = findViewById(R.id.txt_result);
         

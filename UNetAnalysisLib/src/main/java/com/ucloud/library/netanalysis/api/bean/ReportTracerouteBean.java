@@ -18,8 +18,10 @@ import java.util.List;
 public class ReportTracerouteBean extends UCReportBean {
     private ReportTracerouteData tracerouteData;
     
-    public ReportTracerouteBean(String appKey, TracerouteDataBean tracerouteData, ReportTracerouteTagBean tag, IpInfoBean ipInfo, UserDefinedData userDefinedData) {
-        super(appKey, "traceroute", tag, ipInfo, userDefinedData);
+    //public ReportTracerouteBean(String appKey, TracerouteDataBean tracerouteData, ReportTracerouteTagBean tag, IpInfoBean ipInfo, UserDefinedData userDefinedData) {
+    public ReportTracerouteBean(TracerouteDataBean tracerouteData, ReportTracerouteTagBean tag, IpInfoBean ipInfo, UserDefinedData userDefinedData) {
+        //super(appKey, "traceroute", tag, ipInfo, userDefinedData);
+        super("traceroute", tag, ipInfo, userDefinedData);
         if (tracerouteData != null) {
             this.timestamp = tracerouteData.timestamp;
             this.tracerouteData = new ReportTracerouteData(tracerouteData.getRouteInfoList());

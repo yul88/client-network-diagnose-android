@@ -45,11 +45,11 @@ import com.ucloud.library.netanalysis.module.UCNetStatus;
 import com.ucloud.library.netanalysis.module.UCNetworkInfo;
 import com.ucloud.library.netanalysis.module.UCSdkStatus;
 import com.ucloud.library.netanalysis.utils.UCConfig;
-import com.ucloud.library.netanalysis.utils.Encryptor;
+//import com.ucloud.library.netanalysis.utils.Encryptor;
 import com.ucloud.library.netanalysis.utils.JLog;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+//import java.security.NoSuchAlgorithmException;
+//import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -85,24 +85,27 @@ class UCNetAnalysisManager {
     private PingDomainResult mDomainResult;
     private UCommandRunner mCommandRunner;
     
-    UCNetAnalysisManager(@NonNull Context applicationContext,
-                         @NonNull String appKey, @NonNull String appSecret) {
-        if (TextUtils.isEmpty(appKey))
-            throw new IllegalArgumentException("appKey is empty!");
-        if (TextUtils.isEmpty(appSecret))
-            throw new IllegalArgumentException("appSecret is empty!");
-        appSecret = Encryptor.filterRsaKey(appSecret);
-        if (TextUtils.isEmpty(appSecret))
-            throw new IllegalArgumentException("appSecret is illegal!");
-        
-        try {
-            this.mContext = applicationContext;
-            this.mApiManager = new UCApiManager(applicationContext, appKey, Encryptor.getPublicKey(appSecret));
-            this.mTelephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-            this.mCustomIps = new ArrayList<>();
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new IllegalArgumentException("appSecret is invalid!", e);
-        }
+    //UCNetAnalysisManager(@NonNull Context applicationContext,
+                         //@NonNull String appKey, @NonNull String appSecret) {
+    UCNetAnalysisManager(@NonNull Context applicationContext) {
+
+        //if (TextUtils.isEmpty(appKey))
+        //    throw new IllegalArgumentException("appKey is empty!");
+        //if (TextUtils.isEmpty(appSecret))
+        //    throw new IllegalArgumentException("appSecret is empty!");
+        //appSecret = Encryptor.filterRsaKey(appSecret);
+        //if (TextUtils.isEmpty(appSecret))
+        //    throw new IllegalArgumentException("appSecret is illegal!");
+
+        //try {
+        this.mContext = applicationContext;
+            //this.mApiManager = new UCApiManager(applicationContext, appKey, Encryptor.getPublicKey(appSecret));
+        this.mApiManager = new UCApiManager(applicationContext);
+        this.mTelephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+        this.mCustomIps = new ArrayList<>();
+        //} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+        //    throw new IllegalArgumentException("appSecret is invalid!", e);
+        //}
     }
     
     synchronized void destroy() {

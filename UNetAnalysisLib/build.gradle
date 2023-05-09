@@ -4,6 +4,16 @@ import proguard.gradle.ProGuardTask
 
 apply plugin: 'com.android.library'
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'net.sf.proguard:proguard-gradle:5.2.1'
+    }
+}
+
 android {
     compileSdkVersion 29
 
@@ -23,6 +33,7 @@ android {
             jniDebuggable true
             buildConfigField('String', 'UCLOUD_API_IPIP', toJavaCodeString(UCLOUD_API_IPIP))
             buildConfigField('String', 'UCLOUD_API', toJavaCodeString(UCLOUD_API))
+            buildConfigField('String', 'VERSION_NAME', toJavaCodeString("2.1.0"))
         }
         release {
             minifyEnabled true
@@ -30,6 +41,7 @@ android {
             jniDebuggable false
             buildConfigField('String', 'UCLOUD_API_IPIP', toJavaCodeString(UCLOUD_API_IPIP))
             buildConfigField('String', 'UCLOUD_API', toJavaCodeString(UCLOUD_API))
+            buildConfigField('String', 'VERSION_NAME', toJavaCodeString("2.1.0"))
         }
     }
     lintOptions {
@@ -91,7 +103,7 @@ static String toJavaCodeString(String string) {
 //    include('classes.jar')
 //    rename('classes.jar', 'BSBandLib.jar')
 //}
-//
+
 //makeJar.dependsOn(build)
 
 task clearJar(type: Delete) {
@@ -101,22 +113,22 @@ task clearJar(type: Delete) {
 
 task makeJar(dependsOn: ['clearJar', 'build', 'compileReleaseJavaWithJavac'], type: Jar) {
     //指定生成的jar名
-//    appendix = "demo"
+    appendix = "demo"
     getArchiveBaseName().set("UNetAnalysisLib")
-//    version = "1.0.0"
-//    classifier = "release"
+    version = "1.0.0"
+    classifier = "release"
     //后缀名
     getArchiveExtension().set("jar")
     //最终的 Jar 包名，如果没设置，默认为 [baseName]-[appendix]-[version]-[classifier].[extension]
-//    archiveName = "CCBWristBand_jd.jar"
+    archiveName = "CCBWristBand_jd.jar"
     //需打包的资源所在的路径集
-//    from(project.zipTree("libs/依赖的第三方库"))
+    from(project.zipTree("libs/依赖的第三方库"))
     //初始化资源路径集
     from project.buildDir.absolutePath + "/intermediates/javac/release/classes"
     //打包到jar后的目录结构
-//    into('cn/com/jd/')
+    into('cn/com/jd/')
     //去除路径集下部分的资源
-//    exclude "**/BuildConfig.class"
+    exclude "**/BuildConfig.class"
     exclude "**/R.class"
     exclude "android/**"
     exclude { it.name.startsWith('R$') }
@@ -124,6 +136,8 @@ task makeJar(dependsOn: ['clearJar', 'build', 'compileReleaseJavaWithJavac'], ty
     //    include "org/chaos/demo/jar/**/*.class"
     //注: exclude include 支持可变长参数
 }
+
+makeJar.dependsOn(build)
 
 task makeProguardJar(dependsOn: ['makeJar'], type: ProGuardTask) {
     //Android 默认的 proguard 文件

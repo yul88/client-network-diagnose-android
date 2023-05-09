@@ -25,14 +25,16 @@ public class UmqaClient {
      * 初始化SDK模块
      *
      * @param applicationContext application的context
-     * @param appKey             UCloud为您的APP分配的APP_KEY
-     * @param appSecret          UCloud为您的APP分配的APP_SECRET
+     * //@param appKey             UCloud为您的APP分配的APP_KEY
+     * //@param appSecret          UCloud为您的APP分配的APP_SECRET
      * @return 是否init成功，若重复init，则返回false，需要先destroy后重新init
      */
-    public synchronized static boolean init(@NonNull Context applicationContext,
-                                            @NonNull String appKey, @NonNull String appSecret) {
+    //public synchronized static boolean init(@NonNull Context applicationContext,
+    //                                        @NonNull String appKey, @NonNull String appSecret) {
+    public synchronized static boolean init(@NonNull Context applicationContext) {
         if (mManager == null) {
-            mManager = new UCNetAnalysisManager(applicationContext, appKey, appSecret);
+            //mManager = new UCNetAnalysisManager(applicationContext, appKey, appSecret);
+            mManager = new UCNetAnalysisManager(applicationContext);
             return true;
         }
         

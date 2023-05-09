@@ -11,28 +11,29 @@ import org.json.JSONObject;
  * E-mail: joshua.yin@ucloud.cn
  */
 public class UCApiBaseRequestBean implements JsonSerializable {
-    protected String appKey;
+    //protected String appKey;
     
-    public UCApiBaseRequestBean(String appKey) {
-        this.appKey = appKey;
+    //public UCApiBaseRequestBean(String appKey) {
+    public UCApiBaseRequestBean() {
+        //this.appKey = appKey;
     }
     
-    public String getAppKey() {
-        return appKey;
-    }
-    
-    public void setAppKey(String appKey) {
-        this.appKey = appKey;
-    }
+    //public String getAppKey() {
+    //    return appKey;
+    //}
+    //
+    //public void setAppKey(String appKey) {
+    //    this.appKey = appKey;
+    //}
     
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        try {
-            json.put("app_key", appKey);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        //try {
+        //    json.put("app_key", appKey);
+        //} catch (JSONException e) {
+        //    e.printStackTrace();
+        //}
         return json;
     }
 }
