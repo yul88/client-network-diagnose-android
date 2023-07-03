@@ -1,0 +1,27 @@
+{
+    "meta":
+    {
+        "code":200,
+        "error":""
+    },
+    "data":
+    {
+        "enabled":1,
+        "req_body":
+        {
+            "action":"ping",
+            "timestamp":1684758082,
+            "tag":"app_id=com.ucloud.demo.netanalysis,platform=0,s_ver=Android/2.1.0,cus=0,tz=+0800,dst_ip=8.8.4.4,TTL=255",
+            "ip_info":"ip=203.208.61.89,region=BJ,country=,city=,isp=,lon=116.3883,lat=39.9289,owner=,net_type=WIFI",
+            "uuid":"E9918CEA-8475-4B6E-8DF4-3C416C8F9048",
+            "trigger_type":0,
+            "user_defined":"",
+            "ping_data":{
+                "delay":70,
+                "loss":0
+            },
+            "ping_status":0
+        }
+    }
+}
+
