@@ -3,8 +3,10 @@ package com.ucloud.library.netanalysis;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
-//import android.util.Base64;
+import android.util.Base64;
+import android.util.ArrayMap;
 
+import com.google.protobuf.Internal;
 import com.ucloud.library.netanalysis.api.bean.UCApiBaseRequestBean;
 import com.ucloud.library.netanalysis.api.bean.SdkStatus;
 import com.ucloud.library.netanalysis.api.http.HttpMethod;
@@ -16,8 +18,8 @@ import com.ucloud.library.netanalysis.api.bean.IpInfoBean;
 import com.ucloud.library.netanalysis.api.bean.MessageBean;
 import com.ucloud.library.netanalysis.api.bean.PingDataBean;
 import com.ucloud.library.netanalysis.api.bean.PublicIpBean;
-import com.ucloud.library.netanalysis.api.bean.ReportPingBean;
-import com.ucloud.library.netanalysis.api.bean.ReportPingTagBean;
+//import com.ucloud.library.netanalysis.api.bean.ReportPingBean;
+//import com.ucloud.library.netanalysis.api.bean.ReportPingTagBean;
 import com.ucloud.library.netanalysis.api.bean.ReportTracerouteBean;
 import com.ucloud.library.netanalysis.api.bean.ReportTracerouteTagBean;
 import com.ucloud.library.netanalysis.api.bean.TracerouteDataBean;
@@ -32,7 +34,9 @@ import com.ucloud.library.netanalysis.parser.JsonDeserializer;
 import com.ucloud.library.netanalysis.parser.JsonSerializable;
 //import com.ucloud.library.netanalysis.utils.Encryptor;
 //import com.ucloud.library.netanalysis.utils.HexFormatter;
-//import com.ucloud.library.netanalysis.utils.JLog;
+import com.ucloud.library.netanalysis.utils.JLog;
+
+import com.ucloud.library.netanalysis.utils.SchemaCndDemo.State;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,6 +51,8 @@ import java.util.ArrayList;
 //import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.Map;
+
 
 //import javax.crypto.BadPaddingException;
 //import javax.crypto.IllegalBlockSizeException;
@@ -59,12 +65,12 @@ import java.util.UUID;
  */
 final class UCApiManager {
     private final String TAG = this.getClass().getSimpleName();
-    
+
     private final String KEY_SP_UUID = "uuid";
-    
+
     private final String packageName;
     private SharedPreferences sharedPreferences;
-    
+
     private UCHttpClient httpClient;
     private UCHttpsClient httpsClient;
 
@@ -73,27 +79,27 @@ final class UCApiManager {
     private final PublicKey appSecret;
     */
     private String uuid;
-    
+
     //UCApiManager(Context context, String appKey, PublicKey appSecret) {
     UCApiManager(Context context) {
         this.packageName = context.getPackageName();
         //this.appKey = appKey;
         //this.appSecret = appSecret;
-        
+
         prepareUuid(context);
-        
+
         httpClient = new UCHttpClient();
         httpsClient = new UCHttpsClient();
     }
-    
+
     private class PrepareUuidThread extends Thread {
         private Context context;
-        
+
         public PrepareUuidThread(Context context) {
             super("prepare-uuid");
             this.context = context;
         }
-        
+
         @Override
         public void run() {
             sharedPreferences = context.getSharedPreferences("umqa-sdk", Context.MODE_PRIVATE);
@@ -104,11 +110,11 @@ final class UCApiManager {
             }
         }
     }
-    
+
     private void prepareUuid(Context context) {
         new PrepareUuidThread(context).start();
     }
-    
+
     Response<UCApiResponseBean<SdkStatus>> apiGetSdkStatus() throws UCHttpException {
         //UCApiBaseRequestBean requestBean = new UCApiBaseRequestBean(appKey);
         UCApiBaseRequestBean requestBean = new UCApiBaseRequestBean();
@@ -139,7 +145,7 @@ final class UCApiManager {
             }
         });
     }
-    
+
     /**
      * 获取移动端公网IP信息
      *
@@ -175,12 +181,12 @@ final class UCApiManager {
                     bean.setUtcOffset(jData.optString("utc_offset"));
                 }
                 response.setIpInfo(bean);
-                
+
                 return response;
             }
         });
     }
-    
+
     /**
      * 获取UCloud需要监测的IP列表，以及上报服务器列表
      *
@@ -195,7 +201,7 @@ final class UCApiManager {
             requestBean.setLongitude(ipInfoBean.getLongitude());
             requestBean.setLatitude(ipInfoBean.getLatitude());
         }
-        
+
         UCHttpClient client = BuildConfig.UCLOUD_API.startsWith("https") ? httpsClient : httpClient;
         return client.execute(new Request.RequestBuilder<JsonSerializable>(BuildConfig.UCLOUD_API, HttpMethod.POST)
                 .path("/api/iplist/getpinglist/")
@@ -216,7 +222,7 @@ final class UCApiManager {
                 if (data != null) {
                     IpListBean ipListBean = new IpListBean();
                     ipListBean.setDomain(data.optString("domain", ""));
-                    
+
                     List<String> url = new ArrayList<>();
                     JSONArray arrUrl = data.optJSONArray("url");
                     if (arrUrl != null) {
@@ -225,7 +231,7 @@ final class UCApiManager {
                         }
                     }
                     ipListBean.setUrl(url);
-                    
+
                     List<IpListBean.InfoBean> info = new ArrayList<>();
                     JSONArray arrInfo = data.optJSONArray("info");
                     if (arrInfo != null) {
@@ -244,12 +250,12 @@ final class UCApiManager {
                     ipListBean.setInfo(info);
                     response.setData(ipListBean);
                 }
-                
+
                 return response;
             }
         });
     }
-    
+
     /**
      * 上报Ping的结果
      * <p>
@@ -266,7 +272,8 @@ final class UCApiManager {
                                                            UserDefinedData userDefinedData) throws UCHttpException {
         if (TextUtils.isEmpty(reportAddress))
             throw new UCHttpException("URL is empty!");
-        
+
+        /* Begin of original logic
         ReportPingTagBean reportTag = new ReportPingTagBean(packageName, pingData.getDst_ip(), pingData.getTTL());
         reportTag.setCus(isCustomIp);
         //ReportPingBean report = new ReportPingBean(appKey, pingData, pingStatus,
@@ -275,12 +282,11 @@ final class UCApiManager {
         report.setUuid(uuid);
         report.setTrigger(isManmul ? 1 : 0);
 
-        /* no encryption in demo
-        UCReportEncryptBean reportEncryptBean = encryptReportData(report);
-        if (reportEncryptBean == null)
-            return null;
-        */
-        
+        // no encryption in demo
+        //UCReportEncryptBean reportEncryptBean = encryptReportData(report);
+        //if (reportEncryptBean == null)
+        //    return null;
+
         UCHttpClient client = reportAddress.startsWith("https") ? httpsClient : httpClient;
         return client.execute(new Request.RequestBuilder<JsonSerializable>(reportAddress, HttpMethod.POST)
                 //.body(reportEncryptBean)
@@ -306,8 +312,110 @@ final class UCApiManager {
                 return response;
             }
         });
+        End of original logic */
+
+        State.Record pingRecord = State.Record.newBuilder()
+                .setDelay(0)
+                .setHop(1)
+                .build();
+        State pingState = State.newBuilder()
+                .setClientIP(srcIpInfo.getIp())
+                //DeviceID: TBD
+                .setDeviceID(uuid)
+                //Error: TBD code to message
+                .setError(Integer.toString(pingStatus))
+                //Name: TBD, target Domain Name
+                .setName("")
+                .setTarget(pingData.getDst_ip())
+                .setTime(Long.toString(pingData.getTimestamp()))
+                .setTimezone(srcIpInfo.getTimezone())
+                .addTracert(pingRecord)
+                //UserID: TBD
+                .setUserID("")
+                .setAverage(pingData.getDelay())
+                .setLost(pingData.getLoss())
+                //max & total: TBD
+                .setMax(-1)
+                .setTotal(5)
+                //DiagType: 1-ping, 2-tracert
+                .setDiagType(1)
+                .setNetType(srcIpInfo.getNetType())
+                //Platform: 2-Android, 3-iOS, 4-PC
+                .setPlatform(2)
+                .setInsertID((uuid + "-" + Long.toString(pingData.getTimestamp(), 36)))
+                .build();
+
+        try {
+            //`{\"messages\": [ { \"data\": {pingStateB64} } ] }`
+            JSONObject jsData = new JSONObject();
+            jsData.put("data", Base64.encodeToString(pingState.toByteArray(), Base64.NO_WRAP));
+            JSONArray jsArr = new JSONArray();
+            jsArr.put(jsData);
+            JSONObject jsReport = new JSONObject();
+            jsReport.put("messages", jsArr);
+
+            Response<UCApiResponseBean<MessageBean>> tokenRsp = apiGetToken();
+            String token = tokenRsp.body().getData().getMessage();
+            JLog.D(TAG,"Got a Token: " + token);
+            Map<String, String> authHdr = new ArrayMap<>();
+            authHdr.put("Authorization", "Bearer " + token);
+
+            UCHttpClient client = reportAddress.startsWith("https") ? httpsClient : httpClient;
+            return client.execute(new Request.RequestBuilder<String>(reportAddress, HttpMethod.POST)
+                    .headers(authHdr)
+                    .body(jsReport.toString())
+                    .build(), new JsonDeserializer<UCApiResponseBean<MessageBean>>() {
+                @Override
+                public UCApiResponseBean<MessageBean> fromJson(String json) throws JSONException {
+                    UCApiResponseBean.MetaBean metaBean = new UCApiResponseBean.MetaBean();
+                    MessageBean message = new MessageBean();
+
+                    UCApiResponseBean<MessageBean> response = new UCApiResponseBean<>();
+                    JSONObject jObj = new JSONObject(json);
+                    JSONObject dataErr = jObj.optJSONObject("data");
+                    // Error Response will not run to here, code for reference
+                    if (dataErr != null) {
+                    /* error response
+                    {
+                        status: 403,
+                        statusText: 'Forbidden',
+                        headers: {...},
+                        config: {...},
+                        request: {...},
+                        data: {
+                            error: {
+                                code: 403,
+                                message: '...',
+                                status: '...'
+                            }
+                        }
+                    }
+                     */
+                        JSONObject rspErr = dataErr.getJSONObject("error");
+                        metaBean.setCode(rspErr.getInt("code"));
+                        metaBean.setError(rspErr.optString("message", ""));
+                        message.setMessage("");
+                    } else {
+                        /* successful response
+                            { messageIds: ['...'] }
+                         */
+                        JSONArray mids = jObj.getJSONArray("messageIds");
+                        metaBean.setCode(200);
+                        metaBean.setError("");
+                        message.setMessage(mids.getString(0));
+                    }
+                    response.setMeta(metaBean);
+                    response.setData(message);
+                    JLog.D(TAG,"response: " + response);
+                    return response;
+                }
+            });
+        } catch (JSONException err) {
+            JLog.D(TAG,"Failed to build request: " + err);
+        }
+        return null;
     }
-    
+
     /**
      * 上报Traceroute的结果
      * <p>
@@ -324,7 +432,7 @@ final class UCApiManager {
                                                                  boolean isManmul, UserDefinedData userDefinedData) throws UCHttpException {
         if (TextUtils.isEmpty(reportAddress))
             throw new UCHttpException("URL is empty!");
-        
+
         ReportTracerouteTagBean reportTag = new ReportTracerouteTagBean(packageName, tracerouteData.getDst_ip());
         reportTag.setCus(isCustomIp);
         //ReportTracerouteBean report = new ReportTracerouteBean(appKey, tracerouteData,
@@ -339,7 +447,7 @@ final class UCApiManager {
         if (reportEncryptBean == null)
             return null;
         */
-        
+
         UCHttpClient client = reportAddress.startsWith("https") ? httpsClient : httpClient;
         return client.execute(new Request.RequestBuilder<JsonSerializable>(reportAddress, HttpMethod.POST)
                 //.body(reportEncryptBean)
@@ -369,21 +477,21 @@ final class UCApiManager {
 
 /* no encryption in demo
     private static final int RSA_CRYPT_SRC_LIMIT = 128;
-    
+
     private UCReportEncryptBean encryptReportData(UCReportBean reportBean) {
         if (reportBean == null)
             return null;
-        
+
         String oriTag = reportBean.getTag();
         String oriIpInfo = reportBean.getIpInfo();
         UserDefinedData oriUserDefined = reportBean.getUserDefinedData();
         String oriStrUserDefined = oriUserDefined == null ? "" : oriUserDefined.toString();
-        
+
         if (TextUtils.isEmpty(oriTag) || TextUtils.isEmpty(oriIpInfo))
             return null;
-        
+
         UCReportEncryptBean encryptBean = new UCReportEncryptBean("");
-        
+
         try {
             reportBean.setTag(encryptRSA(oriTag, appSecret));
             reportBean.setIpInfo(encryptRSA(oriIpInfo, appSecret));
@@ -420,4 +528,40 @@ final class UCApiManager {
         
         return HexFormatter.formatByteArray2HexString(cryptArr, false);
     }*/
-}
+
+    /**
+     * 从Cloud Function获取pub/sub Token
+     * <p>
+     *
+     * @return response返回 {@link UCApiResponseBean}<{@link MessageBean}>
+     * @throws IOException
+     */
+    Response<UCApiResponseBean<MessageBean>> apiGetToken() throws UCHttpException {
+
+        UCHttpClient client = BuildConfig.UCLOUD_API.startsWith("https") ? httpsClient : httpClient;
+        return client.execute(new Request.RequestBuilder<JsonSerializable>(BuildConfig.UCLOUD_API, HttpMethod.GET)
+                .path("/api/getToken")
+                .build(), new JsonDeserializer<UCApiResponseBean<MessageBean>>() {
+            @Override
+            public UCApiResponseBean<MessageBean> fromJson(String json) throws JSONException {
+                UCApiResponseBean<MessageBean> response = new UCApiResponseBean<>();
+                JSONObject jObj = new JSONObject(json);
+                    JSONObject meta = jObj.optJSONObject("meta");
+                    if (meta != null) {
+                        UCApiResponseBean.MetaBean metaBean = new UCApiResponseBean.MetaBean();
+                        metaBean.setCode(meta.getInt("code"));
+                        metaBean.setError(meta.optString("error", ""));
+                        response.setMeta(metaBean);
+                    }
+                    JSONObject data = jObj.optJSONObject("data");
+                    if (data != null) {
+                        MessageBean message = new MessageBean();
+                        message.setMessage(data.optString("token", ""));
+                        response.setData(message);
+                    }
+                    return response;
+                }
+            });
+        }
+
+    }

@@ -63,7 +63,7 @@ import java.util.Random;
 class UCNetAnalysisManager {
     private final String TAG = getClass().getSimpleName();
     
-    private UCApiManager mApiManager;
+    private final UCApiManager mApiManager;
     private Context mContext;
     
     private UNetStatusReceiver mNetStatusReceiver;

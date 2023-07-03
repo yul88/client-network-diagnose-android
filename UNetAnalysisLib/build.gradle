@@ -18,10 +18,13 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        minSdkVersion 16
+        //minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 29
         versionCode 11
         versionName "2.1.0"
+        // Enabling multidex support.
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,6 +36,8 @@ android {
             jniDebuggable true
             buildConfigField('String', 'UCLOUD_API_IPIP', toJavaCodeString(UCLOUD_API_IPIP))
             buildConfigField('String', 'UCLOUD_API', toJavaCodeString(UCLOUD_API))
+            buildConfigField('String', 'PROJECT_ID', toJavaCodeString(PROJECT_ID))
+            buildConfigField('String', 'TOPIC_ID', toJavaCodeString(TOPIC_ID))
             buildConfigField('String', 'VERSION_NAME', toJavaCodeString("2.1.0"))
         }
         release {
@@ -41,11 +46,17 @@ android {
             jniDebuggable false
             buildConfigField('String', 'UCLOUD_API_IPIP', toJavaCodeString(UCLOUD_API_IPIP))
             buildConfigField('String', 'UCLOUD_API', toJavaCodeString(UCLOUD_API))
+            buildConfigField('String', 'PROJECT_ID', toJavaCodeString(PROJECT_ID))
+            buildConfigField('String', 'TOPIC_ID', toJavaCodeString(TOPIC_ID))
             buildConfigField('String', 'VERSION_NAME', toJavaCodeString("2.1.0"))
         }
     }
     lintOptions {
         abortOnError false
+    }
+    packagingOptions {
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'META-INF/DEPENDENCIES'
     }
 }
 
@@ -55,6 +66,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    implementation platform('com.google.cloud:libraries-bom:26.14.0')
+    implementation 'com.google.cloud:google-cloud-pubsub'
+    implementation 'androidx.multidex:multidex:2.0.1'
 }
 
 

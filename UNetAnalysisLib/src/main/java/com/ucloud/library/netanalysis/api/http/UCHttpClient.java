@@ -136,19 +136,22 @@ public class UCHttpClient {
         // 读取ContentLength，若没有该字段，赋值 -1
         List<String> cl = response.headers().get("Content-Length");
         long contentLength = cl == null || cl.isEmpty() ? -1 : Long.parseLong(cl.get(0));
-        
+
         // 当code为带数据体的类型时，读取response-body
-        if (code >= 200 && code != 204 && code != 304) {
+        //if (code >= 200 && code != 204 && code != 304) {
+        if (code >= 200 && code != 204 && code != 304 && code < 400) {
             InputStream inputStream = connection.getInputStream();
             byte[] content = read(inputStream, contentLength);
-            
+
             String bodyContent = content == null ? null : new String(content, Charset.forName("UTF-8"));
             if (content != null && content.length < 2 << 10)
                 JLog.D(TAG, "[response-body]: " + bodyContent);
             
             response.setBody(bodyContent == null ? null : deserializer.fromJson(bodyContent));
+        } else {
+            response.setBody(null);
         }
-        
+
         if (code != 200) {
             // 当code != 200时，读取错误信息
             InputStream errorStream = connection.getErrorStream();
@@ -157,7 +160,7 @@ public class UCHttpClient {
             if (response.error() != null)
                 JLog.D(TAG, "[response-error]: " + response.error());
         }
-        
+
         if (code == 201 || (code >= 300 && code < 400)) {
             // 当code = 3xx时，重定向操作
             String location = connection.getHeaderField("Location");

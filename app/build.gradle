@@ -4,10 +4,13 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.ucloud.demo.netanalysis"
-        minSdkVersion 16
+        //minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 3
         versionName "2.0"
+        // Enabling multidex support.
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -22,6 +25,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
@@ -32,4 +39,5 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation project(path: ':UNetAnalysisLib')
+    implementation 'androidx.multidex:multidex:2.0.1'
 }

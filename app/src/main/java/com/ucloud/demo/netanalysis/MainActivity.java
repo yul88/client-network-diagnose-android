@@ -41,9 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView txt_result;
     
     //private String appKey = UCloud为您的APP分配的APP_KEY;
-    //private String appKey = "dummy_key";
     //private String appSecret = UCloud为您的APP分配的APP_SECRET;
-    //private String appSecret = "dummy_secret";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
