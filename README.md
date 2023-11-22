@@ -8,7 +8,7 @@
 
 ## Changes
 - Upgrade android version 4.1(API 16) to 13 (API 33)
-- Replace the UC api center with self-defined api center, which can be implemented with Cloud Run
+- Replace the UC api center with self-defined api center, which can be implemented with Cloud Run (in folder /cloudfunction)
 - Involve the Pub/Sub SDK for metric reporting with Protocol buffer 3
 
 ## 运行环境
