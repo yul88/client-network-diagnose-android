@@ -17,6 +17,19 @@
 
 </br></br>
 
+## Cloud Function说明
+需要创建一个SA来执行。SA需要有向Pub/Sub的指定topic publisher的权限。
+cnd_api.js内有以下方法：
+- getDemo: debug用，返回Hello World
+- getIpIp: Client初始化之后会向Server端请求地理位置信息，这里调用了fast-geoip库快速查询geoip信息。
+- getToken: Client请求临时Token，向Pub/Sub上传metric时要用到。
+- getPingList: Server端返回的Ping列表，最多支持5个IP地址。这里应该增加业务逻辑，对不同区域的不同项目，Ping列表需要个性化的返回IP列表。
+- getSdkStatus: Client的注册状态。这里应该增加业务逻辑，何种情况才允许Client注册。
+- getReport: 原先的REST上报metric的逻辑，未实装。
+- getDefualt: 一律返回403，对应网络嗅探。
+
+</br></br>
+
 ## 使用
 ### makeJar
 * 在`SDK项目根目录/UNetAnalysisLib/build.gradle` 中有`makeJar`和`makeProguardJar`两个task，分别是编译普通jar和混淆后的jar
