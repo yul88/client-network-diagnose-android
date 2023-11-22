@@ -1,8 +1,19 @@
 # Client Network Diagonse SDK for Android
 
+## 原作者
+- [Joshua Yin](https://github.com/joshuayin)
+
+## Forked from 
+- [netanalysis-sdk-android](https://github.com/ucloud/netanalysis-sdk-android)
+
+## Changes
+- Upgrade android version 4.1(API 16) to 13 (API 33)
+- Replace the UC api center with self-defined api center, which can be implemented with Cloud Run
+- Involve the Pub/Sub SDK for metric reporting with Protocol buffer 3
+
 ## 运行环境
 ### Android
-- Android系统版本：**4.1** (API 16)及以上
+- Android系统版本：**13** (API 33)及以上
 
 </br></br>
 
@@ -492,9 +503,3 @@ public enum UCNetStatus {
 
 ## License
 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.html)
-
-## 原作者
-- [Joshua Yin](https://github.com/joshuayin)
-
-## Forked from 
-- [netanalysis-sdk-android](https://github.com/ucloud/netanalysis-sdk-android)
