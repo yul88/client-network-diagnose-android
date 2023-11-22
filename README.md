@@ -30,6 +30,13 @@ cnd_api.js内有以下方法：
 
 </br></br>
 
+## BIG QUERY说明
+从MaxMind下载GeoIP Lite库的CSV文件，导入到BQ后就可以做基于地理位置/ISP ASN的分析。
+IP地址查询之前，需要把STRING格式改成带子网掩码的BIN格式。
+导入和查询过程请参考 bqSQL/bq.sql
+
+</br></br>
+
 ## 使用
 ### makeJar
 * 在`SDK项目根目录/UNetAnalysisLib/build.gradle` 中有`makeJar`和`makeProguardJar`两个task，分别是编译普通jar和混淆后的jar
