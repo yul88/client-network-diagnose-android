@@ -8,12 +8,25 @@
 
 ## Changes
 - Upgrade android version 4.1(API 16) to 13 (API 33)
-- Replace the UC api center with self-defined api center, which can be implemented with Cloud Run
+- Replace the UC api center with self-defined api center, which can be implemented with Cloud Run (in folder /cloudfunction)
 - Involve the Pub/Sub SDK for metric reporting with Protocol buffer 3
 
 ## 运行环境
 ### Android
 - Android系统版本：**13** (API 33)及以上
+
+</br></br>
+
+## Cloud Function说明
+需要创建一个SA来执行。SA需要有向Pub/Sub的指定topic publisher的权限。
+cnd_api.js内有以下方法：
+- getDemo: debug用，返回Hello World
+- getIpIp: Client初始化之后会向Server端请求地理位置信息，这里调用了fast-geoip库快速查询geoip信息。
+- getToken: Client请求临时Token，向Pub/Sub上传metric时要用到。
+- getPingList: Server端返回的Ping列表，最多支持5个IP地址。这里应该增加业务逻辑，对不同区域的不同项目，Ping列表需要个性化的返回IP列表。
+- getSdkStatus: Client的注册状态。这里应该增加业务逻辑，何种情况才允许Client注册。
+- getReport: 原先的REST上报metric的逻辑，未实装。
+- getDefualt: 一律返回403，对应网络嗅探。
 
 </br></br>
 
