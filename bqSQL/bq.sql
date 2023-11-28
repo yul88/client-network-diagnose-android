@@ -54,8 +54,12 @@ FROM geoip_lite.GeoLite2-ASN-Blocks-IPv4;
 WITH ipbin AS (
     SELECT ip, NET.SAFE_IP_FROM_STRING(ip) & NET.IP_NET_MASK(4, mask) network_bin, mask
         FROM (
-            SELECT '166.111.8.238' AS ip UNION ALL
-            SELECT '137.116.146.145' AS ip
+            SELECT '1.1.1.1' AS ip UNION ALL
+            SELECT '8.8.8.8' AS ip UNION ALL
+            SELECT '9.9.9.9' AS ip UNION ALL
+            SELECT '114.114.114.114' AS ip UNION ALL
+            SELECT '119.29.29.29' AS ip UNION ALL
+            SELECT '223.5.5.5' AS ip
     ), UNNEST(GENERATE_ARRAY(8,32)) mask
 )
 SELECT ip, autonomous_system_organization, city_name, country_name, latitude, longitude
